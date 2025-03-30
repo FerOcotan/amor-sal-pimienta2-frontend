@@ -27,7 +27,7 @@ const QuioscoProvider = ({children}) => {
         setProducto(producto)
     }
 
-    const handleAgregarPedido = ({categoria_id,imagen,...producto}) => {
+    const handleAgregarPedido = ({categoria_id,...producto}) => {
      
 
         if(pedido.some( pedidoState => pedidoState.id === producto.id )) {
@@ -39,6 +39,12 @@ const QuioscoProvider = ({children}) => {
             setPedido([...pedido, producto])
             toast.success(`${producto.nombre} agregado al pedido`)
         }
+    }
+
+    const handleEditarCantidad = id => {
+        const productoActualizar = pedido.filter( producto => producto.id === id)[0]
+        setProducto(productoActualizar)
+        setModal(!modal)
     }
 
     return (
@@ -53,6 +59,7 @@ const QuioscoProvider = ({children}) => {
                 producto,
                 pedido,
                 handleAgregarPedido,
+                handleEditarCantidad,
                 
             }}
         >
