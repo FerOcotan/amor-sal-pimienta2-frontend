@@ -1,12 +1,20 @@
 import React from 'react'
 import {productos} from '../data/productos'
 import Producto from '../components/Producto'
+import useQuiosco from '../hooks/useQuiosco'
 
-export default function inicio() {
+
+export default function Inicio() {
+
+
+  const {categoriaActual} = useQuiosco()
+
+
   return (
     <>
     
-    <h1 className='text-4xl font-black text-center'>Bienvenido a la app de pedidos</h1>
+    
+    <h1 className='text-4xl font-black text-center'>{categoriaActual.nombre}</h1>
 
     <p className='text-lg text-center mt-5 mb-10'>
       Elige tu pedido a continuación y personaliza tu orden

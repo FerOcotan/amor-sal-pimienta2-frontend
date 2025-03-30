@@ -1,10 +1,11 @@
 import React from 'react'
 
-
+import useQuiosco from '../hooks/useQuiosco'
 
 
 export default function Categoria({categoria}) {
 
+    const {handleClickCategoria} = useQuiosco()
     const {icono, id, nombre} = categoria
 
     
@@ -15,7 +16,14 @@ export default function Categoria({categoria}) {
                 src={`/img/icono_${icono}.svg`}
                 className="w-12"
             />
-        <p className='text-lg font-bold cursor-pointer truncate'> {nombre}</p>
+        <button 
+        className='text-lg font-bold cursor-pointer truncate'
+        type="button"
+        onClick={() => handleClickCategoria(id)}
+        >
+        
+           {nombre}
+           </button>
         </div>
   )
 }
