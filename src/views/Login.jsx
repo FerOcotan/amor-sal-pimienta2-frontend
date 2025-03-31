@@ -1,7 +1,7 @@
 import React from 'react'
 import { createRef, useState} from 'react';
 import { Link } from 'react-router-dom';
-import clienteAxios from '../config/axios';
+import { useAuth } from '../hooks/useAuth';
 import Alerta from '../components/Alerta';
 
 export default function Login() {
@@ -13,6 +13,7 @@ export default function Login() {
 
 
     const [errores, setErrores] = useState([]);
+    const {login} = useAuth({middleware: 'guest', url: '/'})
     
     const hadleSubmit = async e => {
         e.preventDefault();
@@ -23,18 +24,7 @@ export default function Login() {
             password: passwordRef.current.value,
            
         }
-        try {
-                const {data} = await clienteAxios.post('/api/login', datos);
-
-                localStorage.setItem('AUTH_TOKEN', data.token);
-
-            } catch (error) {
-                if (error.response && error.response.data.errors) {
-                    setErrores(Object.values(error.response.data.errors));
-                } else {
-                    console.error("Error inesperado:", error);
-                }
-            }
+  
     }
 
   return (
