@@ -11,7 +11,7 @@ export default function Resumen() {
     const handleSubmit = e => {
         e.preventDefault();
 
-  
+        handleSubmitNuevaOrden();
     }
 
     return (
