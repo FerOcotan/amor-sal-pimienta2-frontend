@@ -1,17 +1,18 @@
 import { formatearDinero } from "../helpers";
 import useQuisco from "../hooks/useQuiosco"
-
+import {useAuth} from '../hooks/useAuth'
 import ResumenProducto from "./ResumenProducto";
 
 export default function Resumen() {
     const {pedido, total, handleSubmitNuevaOrden} = useQuisco();
+    const {logout} = useAuth({});
 
     const comprobarPedido = () => pedido.length === 0;
 
     const handleSubmit = e => {
         e.preventDefault();
 
-        handleSubmitNuevaOrden();
+        handleSubmitNuevaOrden(logout);
     }
 
     return (
