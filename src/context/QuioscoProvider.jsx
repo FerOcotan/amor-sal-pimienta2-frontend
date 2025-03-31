@@ -77,16 +77,24 @@ const QuioscoProvider = ({children}) => {
 
     const handleSubmitNuevaOrden = async e => {
         const token = localStorage.getItem('AUTH_TOKEN')
-        try {
-            await clienteAxios.post('/api/pedidos', {
-                
-                total
-            },{
-                   headers: {
-                Authorization: `Bearer ${token}`
-            }
+         try {
+            await clienteAxios.post('/api/pedidos', 
+            {
+                total,
+                productos: pedido.map(producto => {
+                    return {
+                        id: producto.id,
+                        cantidad: producto.cantidad
+                    }
+                })
+            }, 
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             })
-          
+
+           
         } catch (error) {
             console.log(error)
         }
