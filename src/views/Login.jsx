@@ -1,7 +1,42 @@
-
+import React from 'react'
+import { createRef, useState} from 'react';
 import { Link } from 'react-router-dom';
+import clienteAxios from '../config/axios';
+import Alerta from '../components/Alerta';
 
-export default function login() {
+export default function Login() {
+
+
+    const emailRef = createRef();
+    const passwordRef = createRef();
+
+
+
+    const [errores, setErrores] = useState([]);
+    
+    const hadleSubmit = async e => {
+        e.preventDefault();
+
+           const datos = {
+
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
+           
+        }
+        try {
+                const {data} = await clienteAxios.post('/api/login', datos);
+
+                localStorage.setItem('AUTH_TOKEN', data.token);
+
+            } catch (error) {
+                if (error.response && error.response.data.errors) {
+                    setErrores(Object.values(error.response.data.errors));
+                } else {
+                    console.error("Error inesperado:", error);
+                }
+            }
+    }
+
   return (
     <>
 
@@ -12,9 +47,13 @@ export default function login() {
 
     <div className='bg-white shadow rounded-lg p-10 mt-10'>
 
-    <form action="
+    <form 
+                    onSubmit={hadleSubmit}
+                    noValidate
+    action="
     ">
 
+            {errores.length > 0 && errores.map((error, i) => <Alerta key={i}>{error}</Alerta>)}
   
 
                     <div className="mb-4">
@@ -28,6 +67,7 @@ export default function login() {
                             className="mt-2 w-full p-3 bg-gray-50"
                             name="email"
                             placeholder="Tu Email"
+                            ref={emailRef}
                        
                         />
                     </div>
@@ -43,6 +83,7 @@ export default function login() {
                             className="mt-2 w-full p-3 bg-gray-50"
                             name="password"
                             placeholder="Tu Password"
+                            ref={passwordRef}
                           
                         />
                     </div>
