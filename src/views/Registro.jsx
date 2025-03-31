@@ -1,8 +1,11 @@
 import React from 'react'
 import { createRef, useState} from 'react';
 import { Link } from 'react-router-dom';
-import clienteAxios from '../config/axios';
+
 import Alerta from '../components/Alerta';
+import { useAuth } from '../hooks/useAuth';
+import Spinner from "../components/Spinner";
+
 
 
 export default function Registro() {
@@ -15,6 +18,9 @@ export default function Registro() {
 
 
     const [errores, setErrores] = useState([]);
+
+    const {registro} = useAuth({middleware: 'guest', url: '/'})
+      const [cargando, setCargando] = useState(false);
     
     const hadleSubmit = async e => {
         e.preventDefault();
@@ -25,18 +31,8 @@ export default function Registro() {
             password: passwordRef.current.value,
             password_confirmation: passwordConfirmationRef.current.value
         }
-        try {
-                const {data} = await clienteAxios.post('/api/registro', datos);
-                console.log(data.token);
-                console.log(datos); // Verifica los datos que se envían
-
-            } catch (error) {
-                if (error.response && error.response.data.errors) {
-                    setErrores(Object.values(error.response.data.errors));
-                } else {
-                    console.error("Error inesperado:", error);
-                }
-            }
+        setCargando(true);
+        registro(datos, setErrores, setCargando)
     }
 
   return (
@@ -56,7 +52,7 @@ export default function Registro() {
                 action="
                 ">
 
-{errores.length > 0 && errores.map((error, i) => <Alerta key={i}>{error}</Alerta>)}
+        {errores.length > 0 && errores.map((error, i) => <Alerta key={i}>{error}</Alerta>)}
             <div className="mb-4">
                         <label
                             className="text-slate-800"
@@ -126,7 +122,7 @@ export default function Registro() {
                         value="Crear Cuenta"
                         className="bg-yellow-600 hover:bg-yellow-800 text-white w-full mt-5 p-3 uppercase font-bold cursor-pointer"
                     />
-              
+              {cargando ? <Spinner /> : null}
 
     </form>
     </div>

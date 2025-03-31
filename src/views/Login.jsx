@@ -3,29 +3,33 @@ import { createRef, useState} from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import Alerta from '../components/Alerta';
+import Spinner from "../components/Spinner";
 
 export default function Login() {
 
 
-    const emailRef = createRef();
-    const passwordRef = createRef();
-
-
-
-    const [errores, setErrores] = useState([]);
-    const {login} = useAuth({middleware: 'guest', url: '/'})
-    
-    const hadleSubmit = async e => {
+       
+       const emailRef = createRef();
+       const passwordRef = createRef();
+   
+       const [errores, setErrores] = useState([])
+       const { login } = useAuth({
+           middleware: 'guest',
+           url: '/'
+       })
+       const [cargando, setCargando] = useState(false);
+   
+       const handleSubmit = async e => {
         e.preventDefault();
-
-           const datos = {
-
-            email: emailRef.current.value,
-            password: passwordRef.current.value,
-           
+     
+        const datos = {
+          email: emailRef.current.value,
+          password: passwordRef.current.value,
         }
-  
-    }
+        setCargando(true);
+        login(datos, setErrores, setCargando)
+      }
+   
 
   return (
     <>
@@ -38,7 +42,7 @@ export default function Login() {
     <div className='bg-white shadow rounded-lg p-10 mt-10'>
 
     <form 
-                    onSubmit={hadleSubmit}
+                    onSubmit={handleSubmit}
                     noValidate
     action="
     ">
@@ -85,7 +89,7 @@ export default function Login() {
                         className="bg-yellow-600 hover:bg-yellow-800 text-white w-full mt-5 p-3 uppercase font-bold cursor-pointer"
                     />
               
-
+              {cargando ? <Spinner /> : null}
     </form>
     </div>
 
