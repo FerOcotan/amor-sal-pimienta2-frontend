@@ -1,5 +1,5 @@
 import {createContext, useState,useEffect} from 'react'
-import {categorias as categoriasDB} from '../data/categorias'
+// Removed unused import
 import clienteAxios from '../config/axios'
 import {toast} from 'react-toastify'
 
@@ -22,15 +22,21 @@ const QuioscoProvider = ({children}) => {
     }, [pedido])
 
     const obtenerCategorias = async () => {
-      //  const token = localStorage.getItem('AUTH_TOKEN')
+        const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            const {data} = await clienteAxios('/api/categorias')
-            setCategorias(data.data)
-            setCategoriaActual(data.data[0])
+            const { data } = await clienteAxios('/api/categorias', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setCategorias(data.data);
+            if (data.data.length > 0) {
+                setCategoriaActual(data.data[0]); // Evitar error si la API devuelve un array vacío
+            }
         } catch (error) {
-            console.log(error)
+            console.error('Error al obtener categorías:', error);
         }
-    }
+    };
 
     useEffect(() => {
         obtenerCategorias();
@@ -126,6 +132,21 @@ const QuioscoProvider = ({children}) => {
         }
     };
 
+    const handleClickProductoAgotado = async (id) => {
+        
+        const token = localStorage.getItem('AUTH_TOKEN');
+        try {
+            const { data } = await clienteAxios.put(`/api/productos/${id}`, null, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            toast.success(data.message);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <QuioscoContext.Provider
             value={{
@@ -147,6 +168,7 @@ const QuioscoProvider = ({children}) => {
                 
                 handleSubmitNuevaOrden,
                 handleClickCompletarPedido,
+                handleClickProductoAgotado,
             }}
         >
             {children}
