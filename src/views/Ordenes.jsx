@@ -3,9 +3,9 @@ import useQuiosco from '../hooks/useQuiosco'
 import clienteAxios from '../config/axios'
 import { formatearDinero } from '../helpers'
 
-
 export default function Ordenes() {
     const token = localStorage.getItem('AUTH_TOKEN')
+
     const fetcher = async () => {
       const response = await clienteAxios.get('/api/pedidos', {
           headers: {
@@ -15,13 +15,15 @@ export default function Ordenes() {
       return response.data;  // Devolvemos solo la data
   };
   
+  
   const { data, error, isLoading } = useSWR('/api/pedidos', fetcher, { refreshInterval: 1000 });
 
     console.log(data?.data)
     console.log(error)
     console.log(isLoading)
 
-    const {handleClickCompletarPedido} = useQuiosco()
+    const { handleClickCompletarPedido, cargando } = useQuiosco();
+
   
 
   return (
@@ -64,10 +66,17 @@ export default function Ordenes() {
                     </p>
 
                     <button
-                        type="button"
-                        className='bg-indigo-600 hover:bg-indigo-800 px-5 py-2 rounded uppercase font-bold text-white text-center w-full cursor-pointer'
-                        onClick={() => handleClickCompletarPedido(pedido.id)}
-                    >Completar</button>
+    type="button"
+    className="bg-indigo-600 hover:bg-indigo-800 px-5 py-2 rounded uppercase font-bold text-white text-center w-full cursor-pointer flex items-center justify-center"
+    onClick={() => handleClickCompletarPedido(pedido.id)}
+    disabled={cargando} // Deshabilita el botón mientras carga
+>
+    {cargando ? (
+        <div className="animate-spin h-5 w-5 border-4 border-white border-t-transparent rounded-full"></div>
+    ) : (
+        "Completar"
+    )}
+</button>
                 </div>
             ))}
         </div>
